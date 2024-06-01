@@ -14,7 +14,7 @@ public class NotificationService {
     @Autowired
     private NotificationRepository repository;
 
-    public void addNotification(UUID recipientId, String message){
+    public Notification addNotification(UUID recipientId, String message){
         Notification notification = new Notification(
                 UUID.randomUUID(),
                 message,
@@ -24,19 +24,27 @@ public class NotificationService {
 
         repository.save(notification);
 
+        return notification;
+
     }
 
     public List<Notification> getUnreadNotifications(UUID recipientId){
         return repository.findByRecipientIdAndIsReadFalse(recipientId);
     }
 
-    public void markAsRead(UUID notificationId) throws Exception {
+    public List<Notification> getAllNotifications(UUID recipientId){
+        return repository.findByRecipientId(recipientId);
+    }
+
+    public Notification markAsRead(UUID notificationId) throws Exception {
         Notification notification = repository.findById(notificationId)
                 .orElseThrow(() -> new Exception("Notification not found"));
 
         notification.setRead(true);
 
         repository.save(notification);
+
+        return notification;
 
     }
 
